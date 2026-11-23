@@ -30,6 +30,9 @@ button{font:inherit;cursor:pointer}
 
 /* perjalanan */
 #journey{position:relative}
+#flyw{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}#flyw img{position:absolute;left:50%;top:50%;opacity:0;will-change:transform,opacity;transform:translate3d(-50%,-50%,0)}
+#view{position:relative}
+#svg.zm *{animation-play-state:paused!important}
 .stage{position:sticky;top:0;height:100vh;overflow:hidden;background:#061a22}
 #view{position:absolute;inset:0}
 #view svg{width:100%;height:100%;display:block}
@@ -189,7 +192,7 @@ footer a{color:#fff}
      <pattern id="grat" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M100 0H0V100" fill="none" stroke="#fff" stroke-opacity=".07"/></pattern>
      <radialGradient id="mkg"><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
      <clipPath id="tvclip"><rect x="0" y="188" width="1000" height="624"/></clipPath>
-     <mask id="mk" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="-2000" y="-2000" width="5000" height="5000"><circle id="mkc" cx="500" cy="500" r="520" fill="url(#mkg)"/></mask>
+     <clipPath id="ck"><circle id="ckc" cx="500" cy="500" r="520"/></clipPath><radialGradient id="ringg"><stop offset=".7" id="rg0" stop-color="#cfd9dc" stop-opacity="0"/><stop offset=".93" id="rg1" stop-color="#cfd9dc" stop-opacity=".75"/><stop offset="1" id="rg2" stop-color="#cfd9dc" stop-opacity=".95"/></radialGradient>
      <g id="L5art">
       <rect width="1000" height="1000" fill="url(#mapsea)"/><rect width="1000" height="1000" fill="url(#grat)"/>
       <g transform="translate(0 280)">
@@ -440,8 +443,9 @@ footer a{color:#fff}
       <g id="marks" transform="translate(0 280)"></g>
      </g>
     </g>
-    <g id="fly" pointer-events="none"></g>
+    <circle id="ring" cx="500" cy="500" r="0" fill="url(#ringg)" style="display:none" pointer-events="none"/>
    </svg>
+   <div id="flyw" aria-hidden="true"></div>
   </div>
 
   <div id="scrollHint" aria-hidden="true"><svg width="34" height="54" viewBox="0 0 34 54"><rect x="2" y="2" width="30" height="50" rx="15" fill="none" stroke="#fff" stroke-width="3"/><rect class="wheel" x="14.5" y="11" width="5" height="11" rx="2.5" fill="#fff"/></svg></div>
@@ -588,13 +592,16 @@ function render(){
  if(PS<0||RM||Math.abs(PT-PS)>1.5)PS=PT;else{PS+=(PT-PS)*(1-Math.pow(.86,dtm/16.7));if(Math.abs(PT-PS)<.0004)PS=PT}P=PS;
  const i=Math.min(N-1,Math.floor(P)),t=P-i;const raw=i<N-1?cl((t-D)/(1-D)):0;const f=raw*raw*(3-2*raw);
  const {p,s}=L[i];const Z=Math.pow(1/s,f);const qx=p[0]+(500-p[0])*f,qy=p[1]+(500-p[1])*f;
+ let ringOn=false;
  G.forEach((g,j)=>{if(j!==i&&j!==i+1){g.style.display='none';return}g.style.display=''});
- G[i].setAttribute('transform',`translate(${qx} ${qy}) scale(${Z}) translate(${-p[0]} ${-p[1]})`);G[i].removeAttribute('mask');G[i].style.opacity=1;
+ G[i].setAttribute('transform',`translate(${qx} ${qy}) scale(${Z}) translate(${-p[0]} ${-p[1]})`);G[i].removeAttribute('clip-path');G[i].style.opacity=1;
  if(i<N-1){const n=G[i+1];n.setAttribute('transform',`translate(${qx} ${qy}) scale(${Z*s}) translate(-500 -500)`);
   if(i===4){n.removeAttribute('mask');n.setAttribute('clip-path','url(#tvclip)');n.style.opacity=1}
-  else{n.removeAttribute('clip-path');n.setAttribute('mask','url(#mk)');$('#mkc').setAttribute('r',480+f*1100);n.style.opacity=sm(.25,.75,f)}}
- if(i===5)G[5].removeAttribute('clip-path');
- // per-lapisan
+  else{const rr=430+f*1150;n.setAttribute('clip-path','url(#ck)');ckc.setAttribute('r',rr.toFixed(1));n.style.opacity=sm(.15,.7,f);
+   ringOn=f>0&&f<1;if(ringOn){if(ringI!==i){ringI=i;['rg0','rg1','rg2'].forEach(id=>$('#'+id).setAttribute('stop-color',RC[i]))}ring.setAttribute('transform',n.getAttribute('transform'));ring.setAttribute('r',rr.toFixed(1));ring.style.opacity=n.style.opacity}
+   if(f>=.7){const Uv=Math.max(innerWidth,innerHeight)/1000,hx=innerWidth/2/Uv,hy=innerHeight/2/Uv,cy=VBY+500;
+    if(Math.hypot(Math.abs(qx-500)+hx,Math.abs(qy-cy)+hy)<rr*Z*s*.98)G[i].style.display='none'}}}
+  // per-lapisan
  const dw=i===2?cl(t/D):1;
  $$('#steps li').forEach((li,k)=>li.classList.toggle('on',i!==2||dw>=k*.24));
  $('#warm2').style.opacity=i===2?sm(0,.2,dw):1;$('#vap2').style.opacity=i===2?sm(.2,.4,dw):1;
@@ -605,29 +612,37 @@ function render(){
  $('#st0').setAttribute('transform',`translate(${p0[0]} ${p0[1]}) rotate(${ang})`);
  $('#st1').setAttribute('transform',`translate(500 500) rotate(${ang}) translate(-500 -500)`);
  const arrived=i===5&&P-i>.04;let pan='none';if(arrived){pan=innerWidth<=820?`translateX(${(500-M.P[SEL][0])*.85}px)`:'translate(190px,110px) scale(.8)'}$('#L5pan').style.transform=pan;
+ if(ring.style.display!==(ringOn?'':'none'))ring.style.display=ringOn?'':'none';
  flyUpdate(i,f);
+ const zm=f>0&&f<1;if(zm!==svgEl._zm){svgEl._zm=zm;svgEl.classList.toggle('zm',zm)}
  const active=f<.12?i:-1;cards.forEach(c=>c.classList.toggle('on',+c.dataset.i===active));
  $('#scrollHint').style.opacity=P<.25?1:0;
  dots.forEach((d,k)=>d.classList.toggle('on',k===i));
 }
-const svgEl=$('#svg');function fitVB(){svgEl.setAttribute('viewBox',innerWidth<=820&&innerHeight>innerWidth?'0 200 1000 1000':'0 0 1000 1000')}fitVB();addEventListener('resize',fitVB);
+const ckc=$('#ckc'),ring=$('#ring'),RC=['#0c3a4d','#cdd8db','#cbd6d9','#d8ccb3'];let ringI=-1;const svgEl=$('#svg');let VBY=0;function fitVB(){const m=innerWidth<=820&&innerHeight>innerWidth;VBY=m?200:0;svgEl.setAttribute('viewBox',m?'0 200 1000 1000':'0 0 1000 1000')}fitVB();addEventListener('resize',fitVB);
 // awan yang melintas saat zoom
 const FLY=[[-.9,-.5],[.8,-.6],[-.6,.7],[.7,.6],[0,-.9],[-1,.1],[1,.05],[.15,.9],[-.35,-.15],[.4,.2]];
-$('#fly').innerHTML=FLY.map((d,k)=>`<use href="#puffImg" x="-200" y="-200" width="400" height="400" data-k="${k}"/>`).join('');
-const flyEls=$$('#fly use');
+const puffSrc=document.querySelector('#puffImg image').getAttribute('href');
+const FLYN=[0,1,2,3,4,5,7];
+$('#flyw').innerHTML=FLYN.map(k=>`<img src="${puffSrc}" alt="" data-k="${k}">`).join('');
+const flyEls=$$('#flyw img');let U=1;
+function flySize(){U=Math.max(innerWidth,innerHeight)/1000;flyEls.forEach(el=>{el.style.width=el.style.height=(400*U)+'px'})}flySize();addEventListener('resize',flySize);
+let flyOn=true;
 function flyUpdate(i,f){
  const on=(i<=2&&f>0&&f<1);const amp=on?Math.pow(Math.sin(Math.PI*f),1.4):0;
- flyEls.forEach((el,k)=>{if(!amp){el.style.opacity=0;return}const d=FLY[k];const dist=60+f*620+(k%3)*40;const sc=.5+f*2.6+(k%4)*.2;
-  el.setAttribute('transform',`translate(${500+d[0]*dist} ${500+d[1]*dist}) scale(${sc})`);el.style.opacity=(amp*(.55+.35*((k*7)%3)/2)).toFixed(3)});
+ if(!amp){if(flyOn){flyEls.forEach(el=>el.style.opacity=0);flyOn=false}return}flyOn=true;
+ flyEls.forEach(el=>{const k=+el.dataset.k;const d=FLY[k];const dist=(60+f*620+(k%3)*40)*U;const sc=.5+f*2.6+(k%4)*.2;
+  el.style.transform=`translate3d(calc(-50% + ${(d[0]*dist).toFixed(1)}px),calc(-50% + ${(d[1]*dist).toFixed(1)}px),0) scale(${sc.toFixed(3)})`;el.style.opacity=(amp*(.55+.35*((k*7)%3)/2)).toFixed(3)});
 }
 // petir
 let nextFlash=performance.now()+2500,flashAt=-1e9,flashK=0;const ltEls=$$('#lt1 circle:not(#lt1all)');
+const _lc=new Map();function sa(el,k,v){const key=el;let m=_lc.get(key);if(!m){m={};_lc.set(key,m)}if(m[k]!==v){m[k]=v;el.setAttribute(k,v)}}
 function lightning(now){
  if(now>nextFlash){flashAt=now;nextFlash=now+1800+Math.random()*2800;flashK=Math.floor(Math.random()*ltEls.length)}
  const dt=now-flashAt;let I=Math.exp(-dt/90);if(dt>170)I=Math.max(I,.8*Math.exp(-(dt-170)/130));if(dt<0)I=0;
  if(RM)I=0;
- ltEls.forEach((c,k)=>c.setAttribute('opacity',k===flashK?I.toFixed(3):0));
- $('#flash3').setAttribute('opacity',(I*.3).toFixed(3));$('#lt1all').setAttribute('opacity',(I*.55).toFixed(3));$('#flash2').setAttribute('opacity',(I*.18).toFixed(3));$('#bolt3').setAttribute('opacity',(dt<260?I:0).toFixed(3));$('#flash4').setAttribute('opacity',(I*.7).toFixed(3));
+ ltEls.forEach((c,k)=>sa(c,'opacity',k===flashK?I.toFixed(3):0));
+ sa($('#flash3'),'opacity',(I*.3).toFixed(3));sa($('#lt1all'),'opacity',(I*.55).toFixed(3));sa($('#flash2'),'opacity',(I*.18).toFixed(3));sa($('#bolt3'),'opacity',(dt<260?I:0).toFixed(3));sa($('#flash4'),'opacity',(I*.7).toFixed(3));
 }
 function loop(now){if(!RM)ang=(ang+.12)%360;render();lightning(now||performance.now());requestAnimationFrame(loop)}
 loop();
