@@ -118,6 +118,20 @@ button{font:inherit;cursor:pointer}
 footer{background:#06232b;color:#cfe3e1;padding:40px max(6vw,18px);font-size:15px}
 footer a{color:#fff}
 .proto{font-size:13px;opacity:.75}
+.src,.card p.src{font-size:12.5px;color:var(--soft);margin-top:8px}.src a{color:inherit}
+.uji{background:#f3f7f6;color:#14303a;padding:clamp(56px,9vh,110px) max(6vw,18px)}
+.uji h2{font-size:clamp(30px,4.5vw,46px);color:#0b3a46}.uji>p{max-width:720px;margin-top:10px}
+.uji iframe{width:100%;max-width:760px;height:1400px;border:0;border-radius:16px;background:#fff;margin-top:22px;box-shadow:0 6px 30px rgba(8,57,74,.12)}
+.uji .wait{max-width:760px;margin-top:22px;padding:22px;border:2px dashed #9cc7c4;border-radius:16px}
+.sumber{background:#0a2f39;color:#cfe3e1;padding:48px max(6vw,18px)}.sumber h2{font-size:26px;color:#fff}
+.sumber ol{max-width:900px;margin-top:14px;padding-left:20px;font-size:14px;line-height:1.6}.sumber li{margin:6px 0}.sumber a{color:#9fe3da}
+@media(min-width:821px){
+ .card[data-i="1"]{width:min(500px,calc(100% - 100px))}
+ .card[data-i="1"] .facts{grid-template-columns:repeat(3,1fr)}
+ .card[data-i="1"] .fact{flex-direction:column;gap:6px;align-items:flex-start;font-size:13.5px;line-height:1.35}
+ .card[data-i="1"] .fact b{font-size:19px}
+ .card[data-i="1"] .fact{padding:10px 11px}
+}
 @media(max-width:820px){
  .card{left:0;right:0;bottom:0;width:auto;max-height:42vh;border-radius:22px 22px 0 0;padding:18px 18px 22px;background:rgba(5,24,31,.86);border-width:1px 0 0}
  .card h2{font-size:25px}
@@ -417,7 +431,8 @@ footer a{color:#fff}
      <div class="fact"><b>&gt;63&nbsp;km/jam</b><span>angin di dekat pusat, secepat motor di jalan raya</span></div>
      <div class="fact"><b>150–200&nbsp;km</b><span>jangkauan rata-rata dari pusat, kira-kira Jakarta ke Bandung</span></div>
     </div>
-    <p class="small" style="margin-top:10px">Di sekitar Indonesia, siklon paling sering muncul April–Mei dan November–Desember. BMKG menamainya dengan nama bunga dan buah.</p>
+    <p class="small" style="margin-top:10px">Secara statistik klimatologi global, puncak frekuensi kemunculan siklon tropis di belahan bumi selatan (selatan Indonesia) terjadi pada Januari–Maret, sementara di belahan bumi utara (Pasifik Barat) memuncak pada Agustus–September. Bulan April–Mei dan November–Desember merupakan masa peralihan (transisi) saat zona pertumbuhan siklon bergeser mendekati garis khatulistiwa dan wilayah perairan Indonesia. BMKG menamainya dengan nama bunga dan buah.</p>
+    <p class="src">Sumber: BMKG; Mongabay (data BMKG). <a href="#sumber">Lihat semua sumber</a></p>
    </article>
    <article class="card" data-i="2">
     <span class="tag">Masuk ke mata siklon</span>
@@ -429,6 +444,7 @@ footer a{color:#fff}
      <li data-n="4"><b>Mulai berputar.</b> Putaran bumi membelokkan angin. Di selatan khatulistiwa, searah jarum jam.</li>
     </ol>
     <p class="note">Tepat di khatulistiwa, putaran ini sulit terjadi. Karena itu siklon biasanya tumbuh di Samudra Hindia, Laut Timor, atau Pasifik. Ikuti awan kecil itu ke daratan.</p>
+    <p class="src">Sumber: BMKG; BPBD DIY. <a href="#sumber">Lihat semua sumber</a></p>
    </article>
    <article class="card" data-i="3">
     <span class="tag">Ratusan kilometer kemudian</span>
@@ -442,6 +458,7 @@ footer a{color:#fff}
      <button class="chip" aria-pressed="false" data-t="Selokan tersumbat sampah membuat genangan cepat naik.">Saluran air</button>
     </div>
     <p id="chipT" style="margin-top:8px;min-height:2.6em;font-size:15px" aria-live="polite"></p>
+    <p class="src">Sumber: BMKG; Detik Edu. <a href="#sumber">Lihat semua sumber</a></p>
    </article>
    <article class="card" data-i="4">
     <span class="tag">Masuk ke rumah</span>
@@ -450,6 +467,7 @@ footer a{color:#fff}
     <ul class="check" id="list"></ul>
     <div class="meter"><i id="meterI"></i></div>
     <p id="meterT" class="small"></p>
+    <p class="src">Sumber: BPBD DIY; BMKG. <a href="#sumber">Lihat semua sumber</a></p>
    </article>
    <article class="card" data-i="5">
     <span class="tag">Di layar TV</span>
@@ -457,6 +475,7 @@ footer a{color:#fff}
     <div class="seg" id="seg" role="group" aria-label="Pilih siklon"></div>
     <div id="info" aria-live="polite"></div>
     <p class="small" style="margin-top:6px">Titik dan garis adalah perkiraan lokasi umum, bukan lintasan resmi. Angka dampak: total banjir dan longsor menurut BNPB.</p>
+    <p class="src" id="evsrc"></p>
    </article>
   <nav id="dots" aria-label="Bagian perjalanan"></nav>
  </div>
@@ -469,21 +488,49 @@ footer a{color:#fff}
  <p id="qscore" style="margin-top:14px;font-weight:800" aria-live="polite"></p>
  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:10px">
   <a class="btn" href="https://www.bmkg.go.id">Pantau info BMKG</a>
-  <a class="btn ghost" id="formLink" href="#kuis">Beri penilaian web ini</a>
+  <a class="btn ghost" id="formLink" href="#uji">Isi kuesioner uji pengguna</a>
  </div>
- <p class="proto" style="margin-top:8px">Tautan kuesioner uji pengguna menyusul setelah Google Form dibuat.</p>
+</section>
+
+<section class="uji" id="uji">
+ <h2>Bantu kami menilai web ini</h2>
+ <p>Kuesioner ini menilai webnya, bukan menilai kamu. Isinya sekitar 5–7 menit. Jawaban hanya dipakai untuk tugas kuliah WI2022 Manajemen Proyek ITB dan dilaporkan tanpa nama.</p>
+ <div id="formBox"><div class="wait">Kuesioner sedang disiapkan. Silakan kembali lagi nanti.</div></div>
+</section>
+
+<section class="sumber" id="sumber">
+ <h2>Sumber</h2>
+ <p style="font-size:14px;margin-top:6px">Diakses November 2026. Teks di web merangkum sumber berikut dengan bahasa sendiri.</p>
+ <ol>
+  <li><a href="https://web-meteo.bmkg.go.id/id/component/content/article/37-siklon-tropis/281-what-is-cyclone-2" target="_blank" rel="noopener">BMKG, What is a tropical cyclone</a>: suhu laut di atas 26,5 °C, angin di atas 63 km/jam, jangkauan 150–200 km.</li>
+  <li><a href="https://bpbd.jogjaprov.go.id/berita/penyebab-terjadinya-siklon-tropis" target="_blank" rel="noopener">BPBD DIY, Penyebab terjadinya siklon tropis</a>: proses terbentuk, arah putaran, langkah siaga.</li>
+  <li><a href="https://www.cnnindonesia.com/teknologi/20251215152401-641-1306958/mengenal-apa-itu-siklon-tropis-dan-mengapa-makin-sering-terjadi" target="_blank" rel="noopener">CNN Indonesia, Mengenal siklon tropis</a>: mata siklon.</li>
+  <li><a href="https://mongabay.co.id/2021/05/08/belajar-dari-siklon-tropis-seroja-bagaimana-antisipasinya/amp/" target="_blank" rel="noopener">Mongabay, Belajar dari Siklon Tropis Seroja</a>: musim siklon di sekitar Indonesia menurut BMKG.</li>
+  <li><a href="https://mongabay.co.id/2021/04/14/waspada-siklon-tropis-masih-mengancam-wilayah-wilayah-di-indonesia/amp/" target="_blank" rel="noopener">Mongabay, Waspada siklon tropis</a>: penamaan dengan nama bunga dan buah.</li>
+  <li><a href="https://www.detik.com/edu/detikpedia/d-8232974/melihat-bencana-hidrometeorologi-di-utara-sumatera-dari-kacamata-sains" target="_blank" rel="noopener">Detik Edu, Bencana hidrometeorologi di utara Sumatera</a>: kronologi Senyar, peran kondisi lahan.</li>
+  <li><a href="https://www.metrotvnews.com/read/KdZCAvZJ-update-korban-bencana-alam-di-sumatra-1-154-meninggal" target="_blank" rel="noopener">Metro TV, Update korban bencana Sumatra</a>: data BNPB Senyar per 31 Desember 2025.</li>
+  <li><a href="https://kabar24.bisnis.com/read/20210415/15/1381528/12-ribu-lebih-warga-ntt-masih-mengungsi-akibat-siklon-tropis-seroja" target="_blank" rel="noopener">Bisnis.com, Warga NTT masih mengungsi</a>: data BNPB Seroja.</li>
+  <li><a href="https://www.antaranews.com/berita/2081750/seroja-membawa-duka-di-ntt" target="_blank" rel="noopener">Antara, Seroja membawa duka di NTT</a>: kronologi Seroja.</li>
+  <li><a href="https://tirto.id/bnpb-minta-masyarakat-waspada-karena-akan-ada-badai-dahlia-cAYH" target="_blank" rel="noopener">Tirto, BNPB minta warga waspada badai Dahlia</a>: korban Cempaka.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Cyclone_Cempaka" target="_blank" rel="noopener">Wikipedia, Cyclone Cempaka</a>: hujan 383 mm di Pacitan, 27 November 2017.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Tropical_Storm_Vamei" target="_blank" rel="noopener">Wikipedia, Tropical Storm Vamei</a> (merujuk best track JMA dan JTWC): lintasan dan dampak Vamei.</li>
+  <li><a href="https://science.nasa.gov/?p=1092037" target="_blank" rel="noopener">NASA, A Rare Cyclone on the Equator</a>: Vamei terbentuk sekitar 150 km dari khatulistiwa.</li>
+  <li><a href="https://www.guinnessworldrecords.com/world-records/106720-tropical-cyclone-formed-closest-to-the-equator" target="_blank" rel="noopener">Guinness World Records, Tropical cyclone formed closest to the equator</a>: rekor Vamei, 1,4° LU.</li>
+  <li><a href="https://www.metrotvnews.com/read/NP6C3x9M-ini-tips-yang-harus-dilakukan-masyarakat-dalam-menghadapi-cuaca-ekstrem" target="_blank" rel="noopener">Metro TV, Tips menghadapi cuaca ekstrem</a>: memantau Info BMKG.</li>
+ </ol>
+ <p style="font-size:13px;margin-top:12px;opacity:.8">Gambar awan, kota, dan rumah adalah ilustrasi, bukan citra satelit asli. Titik dan garis di peta adalah perkiraan lokasi umum.</p>
 </section>
 
 <footer>
  <p><b>Kenali Siklon, Waspadai Banjir</b>, prototipe produk antara, 23 November 2026. Disusun PT AeroResilience Indonesia (Kelompok 4) untuk Kelompok 3, WI2022 Manajemen Proyek, Meteorologi ITB.</p>
- <p>Produk edukasi, bukan pengganti peringatan resmi BMKG, BNPB, dan BPBD. Sumber: BMKG, BPBD DIY, data BNPB yang dikutip media nasional. Gambar awan adalah ilustrasi, bukan citra satelit asli.</p>
+ <p>Produk edukasi, bukan pengganti peringatan resmi BMKG, BNPB, dan BPBD. Daftar lengkap ada di bagian <a href="#sumber" style="color:#9fe3da">Sumber</a>.</p>
 </footer>
 
 <script>
 {
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const M={"P": {"senyar": [85.7, 65.9], "seroja": [597.7, 381.8], "cempaka": [353, 352.6]}, "T": {"senyar": [[124.8, 86.5], [106.3, 74.2], [85.7, 65.9], [69.3, 59.7]], "seroja": [[628.5, 358.8], [607.9, 375.5], [577.1, 396.4], [536, 417.4]], "cempaka": [[340.7, 354.7], [353, 352.6], [367.4, 348.4], [381.8, 352.6]]}};
+const M={"P": {"vamei": [256.4, 140.1], "senyar": [85.7, 65.9], "seroja": [597.7, 381.8], "cempaka": [353, 352.6]}, "T": {"vamei": [[285.2, 133.9], [256.4, 140.1], [223.5, 136], [192.6, 138], [163.9, 140.1], [137.1, 127.7]], "senyar": [[124.8, 86.5], [106.3, 74.2], [85.7, 65.9], [69.3, 59.7]], "seroja": [[628.5, 358.8], [607.9, 375.5], [577.1, 396.4], [536, 417.4]], "cempaka": [[340.7, 354.7], [353, 352.6], [367.4, 348.4], [381.8, 352.6]]}};
 const cl=t=>Math.min(1,Math.max(0,t)),sm=(a,b,t)=>{t=cl((t-a)/(b-a));return t*t*(3-2*t)};
 // bintang
 let st='';for(let i=0;i<160;i++){const x=(Math.sin(i*12.9898)*43758.5453%1+1)%1*1600-300,y=(Math.sin(i*78.233)*12345.678%1+1)%1*900-200;st+=`<circle ${i%3===0?`class="tw" style="animation-delay:-${(i%9)*.37}s"`:""} cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(i%5?0.9:1.8)}" opacity="${(0.3+(i%7)/10).toFixed(2)}"/>`}
@@ -502,10 +549,12 @@ const cards=$$('.card');
 $('#dots').innerHTML=L.map((c,i)=>`<button aria-label="Bagian ${i+1}"></button>`).join('');
 const dots=$$('#dots button');
 dots.forEach((d,i)=>d.addEventListener('click',()=>scrollTo({top:journey.offsetTop+(i*SEG+.05)*innerHeight,behavior:RM?'auto':'smooth'})));
-let ang=0,P=0,SEL='cempaka';
+let ang=0,P=0,PS=-1,lastT=0,SEL='cempaka';
 function render(){
  const h=document.documentElement;$('#bar').style.width=(h.scrollTop/(h.scrollHeight-innerHeight)*100)+'%';
- const y=-journey.getBoundingClientRect().top;P=Math.max(0,Math.min(N-1+.999,y/(SEG*innerHeight)));
+ const y=-journey.getBoundingClientRect().top;const PT=Math.max(0,Math.min(N-1+.999,y/(SEG*innerHeight)));
+ const now=performance.now(),dtm=Math.min(64,now-(lastT||now));lastT=now;
+ if(PS<0||RM||Math.abs(PT-PS)>1.5)PS=PT;else{PS+=(PT-PS)*(1-Math.pow(.86,dtm/16.7));if(Math.abs(PT-PS)<.0004)PS=PT}P=PS;
  const i=Math.min(N-1,Math.floor(P)),t=P-i;const raw=i<N-1?cl((t-D)/(1-D)):0;const f=raw*raw*(3-2*raw);
  const {p,s}=L[i];const Z=Math.pow(1/s,f);const qx=p[0]+(500-p[0])*f,qy=p[1]+(500-p[1])*f;
  G.forEach((g,j)=>{if(j!==i&&j!==i+1){g.style.display='none';return}g.style.display=''});
@@ -551,6 +600,9 @@ function lightning(now){
 }
 function loop(now){if(!RM)ang=(ang+.12)%360;render();lightning(now||performance.now());requestAnimationFrame(loop)}
 loop();
+// kuesioner: isi FORM dengan link Google Form (…/viewform)
+const FORM='';
+if(FORM.startsWith('https://')){const u=FORM.split('?')[0];$('#formBox').innerHTML=`<iframe src="${u}?embedded=true" title="Kuesioner uji pengguna" loading="lazy">Memuat…</iframe><p class="small" style="margin-top:10px">Form tidak muncul? <a href="${u}" target="_blank" rel="noopener">Buka di tab baru</a>.</p>`}
 // faktor lain
 $$('#chips .chip').forEach(c=>c.addEventListener('click',()=>{$$('#chips .chip').forEach(x=>x.setAttribute('aria-pressed',x===c));$('#chipT').textContent=c.dataset.t}));
 // siaga
@@ -568,9 +620,10 @@ $('#list').addEventListener('change',e=>{const id=e.target.dataset.id;e.target.c
 drawTab();
 // peta
 const EV=[
- {k:'senyar',n:'Senyar',w:'21–27 November 2025',big:'1.154 jiwa',bl:'meninggal di Aceh, Sumut, Sumbar per 31 Des 2025 (BNPB)',t:'Kasus langka: tumbuh di Selat Malaka lalu bergerak ke daratan Aceh. Hujan ekstrem berhari-hari, diperparah kondisi lingkungan, memicu banjir dan longsor besar.'},
- {k:'cempaka',n:'Cempaka',w:'27–29 November 2017',big:'27 jiwa',bl:'meninggal (BNPB)',t:'Lahir di selatan Jawa, dekat Pacitan, badai yang kita ikuti tadi. Pacitan diguyur hujan 383 mm dalam sehari; banjir dan longsor melanda Pacitan, Yogyakarta, dan Wonogiri.'},
- {k:'seroja',n:'Seroja',w:'3–12 April 2021',big:'181 jiwa',bl:'meninggal, lebih dari 66.000 rumah rusak (BNPB)',t:'Tumbuh di sekitar Laut Sawu. Banjir bandang dan longsor melanda Lembata, Flores Timur, Alor, Kupang, dan daerah lain di NTT, serta sebagian NTB.'}];
+ {k:'vamei',n:'Vamei',w:'26–28 Desember 2001',big:'1,4° LU',bl:'titik terbentuknya, siklon terdekat dengan khatulistiwa yang pernah tercatat',t:'Tumbuh di Laut Cina Selatan sekitar 150 km dari khatulistiwa, tempat yang dulu dianggap mustahil. Ia menghantam Johor, Malaysia, lalu melintasi Sumatra bagian timur laut pada 28 Desember. Banjir dan longsor di Malaysia menewaskan 5 orang.',src:[['Wikipedia (JMA, JTWC)','https://en.wikipedia.org/wiki/Tropical_Storm_Vamei'],['NASA','https://science.nasa.gov/?p=1092037']]},
+ {k:'cempaka',n:'Cempaka',w:'27–29 November 2017',big:'27 jiwa',bl:'meninggal (BNPB)',t:'Lahir di selatan Jawa, dekat Pacitan, badai yang kita ikuti tadi. Pacitan diguyur hujan 383 mm dalam sehari; banjir dan longsor melanda Pacitan, Yogyakarta, dan Wonogiri.',src:[['Tirto (BNPB)','https://tirto.id/bnpb-minta-masyarakat-waspada-karena-akan-ada-badai-dahlia-cAYH'],['Wikipedia','https://en.wikipedia.org/wiki/Cyclone_Cempaka']]},
+ {k:'seroja',n:'Seroja',w:'3–12 April 2021',big:'181 jiwa',bl:'meninggal, lebih dari 66.000 rumah rusak (BNPB)',t:'Tumbuh di sekitar Laut Sawu. Banjir bandang dan longsor melanda Lembata, Flores Timur, Alor, Kupang, dan daerah lain di NTT, serta sebagian NTB.',src:[['Bisnis.com (BNPB)','https://kabar24.bisnis.com/read/20210415/15/1381528/12-ribu-lebih-warga-ntt-masih-mengungsi-akibat-siklon-tropis-seroja'],['Antara','https://www.antaranews.com/berita/2081750/seroja-membawa-duka-di-ntt']]},
+ {k:'senyar',n:'Senyar',w:'21–27 November 2025',big:'1.154 jiwa',bl:'meninggal di Aceh, Sumut, Sumbar per 31 Des 2025 (BNPB)',t:'Kasus langka: tumbuh di Selat Malaka lalu bergerak ke daratan Aceh. Hujan ekstrem berhari-hari, diperparah kondisi lingkungan, memicu banjir dan longsor besar.',src:[['Metro TV (BNPB)','https://www.metrotvnews.com/read/KdZCAvZJ-update-korban-bencana-alam-di-sumatra-1-154-meninggal'],['Detik Edu','https://www.detik.com/edu/detikpedia/d-8232974/melihat-bencana-hidrometeorologi-di-utara-sumatera-dari-kacamata-sains']]}];
 $('#tracks').innerHTML=EV.map(e=>`<polyline class="trk" points="${M.T[e.k].map(p=>p.join(',')).join(' ')}"/>`).join('');
 $('#sdots').innerHTML=EV.map(e=>`<circle cx="${M.P[e.k][0]}" cy="${M.P[e.k][1]}" r="9"/>`).join('');
 $('#marks').innerHTML=EV.map(e=>{const[x,y]=M.P[e.k];const se=e.k==='senyar';
@@ -579,6 +632,7 @@ $('#seg').innerHTML=EV.map(e=>`<button data-k="${e.k}" aria-pressed="false">${e.
 function show(k){const e=EV.find(v=>v.k===k);
  $('#info').innerHTML=`<div class="when">${e.w}</div><p style="margin:10px 0 2px"><span class="big">${e.big}</span><br><span style="font-size:15px">${e.bl}</span></p><p style="font-size:15px;margin-top:8px">${e.t}</p>`;
  $$('.mk').forEach(m=>m.style.opacity=m.dataset.k===k?1:.6);$$('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));
+ $('#evsrc').innerHTML='Sumber: '+e.src.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join('; ');
  SEL=k;
 }
 $$('.mk').forEach(m=>{m.addEventListener('click',()=>show(m.dataset.k));m.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();show(m.dataset.k)}})});
