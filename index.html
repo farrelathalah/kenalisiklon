@@ -647,7 +647,7 @@ function lightning(now){
 function loop(now){if(!RM)ang=(ang+.12)%360;render();lightning(now||performance.now());requestAnimationFrame(loop)}
 loop();
 // kuesioner: isi FORM dengan link Google Form (…/viewform)
-const FORM='';
+const FORM='https://docs.google.com/forms/d/e/1FAIpQLSefC11PVsApctYsKkrNTHbkbP5r21D2gjGbUvkBiFhBVEQVQA/viewform';
 if(FORM.startsWith('https://')){const u=FORM.split('?')[0];$('#formBox').innerHTML=`<iframe src="${u}?embedded=true" title="Kuesioner uji pengguna" loading="lazy">Memuat…</iframe><p class="small" style="margin-top:10px">Form tidak muncul? <a href="${u}" target="_blank" rel="noopener">Buka di tab baru</a>.</p>`}
 // faktor lain
 $$('#chips .chip').forEach(c=>c.addEventListener('click',()=>{$$('#chips .chip').forEach(x=>x.setAttribute('aria-pressed',x===c));$('#chipT').textContent=c.dataset.t}));
